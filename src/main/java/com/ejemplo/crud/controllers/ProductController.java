@@ -2,12 +2,16 @@ package com.ejemplo.crud.controllers;
 
 import com.ejemplo.crud.entities.Product;
 import com.ejemplo.crud.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -22,8 +26,16 @@ public class ProductController {
         return service.findAll();
     }
 
+    @PostMapping
+    public ResponseEntity<?> create(@Valid @RequestBody Product product, BindingResult result) {
+        if(result.hasFieldErrors()) {
+            return validation(result);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(product));
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<?> find(@PathVariable Long id) {
+    public ResponseEntity<?> read(@PathVariable Long id) {
         Optional<Product> optionalProduct = service.findById(id);
         if (optionalProduct.isPresent()) {
             return ResponseEntity.ok(optionalProduct.orElseThrow());
@@ -31,13 +43,11 @@ public class ProductController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping
-    public ResponseEntity<Product> save(@RequestBody Product product) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(product));
-    }
-
     @PutMapping("/{id}")
-    public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product product) {
+    public ResponseEntity<?> update(@Valid @RequestBody Product product, BindingResult result, @PathVariable Long id) {
+        if(result.hasFieldErrors()) {
+            return validation(result);
+        }
         Optional<Product> optionalProduct = service.update(id, product);
         if (optionalProduct.isPresent()) {
             return ResponseEntity.ok(optionalProduct.orElseThrow());
@@ -52,6 +62,12 @@ public class ProductController {
             return ResponseEntity.ok(optionalProduct.orElseThrow());
         }
         return ResponseEntity.notFound().build();
+    }
+
+    private ResponseEntity<?> validation(BindingResult result) {
+        Map<String, String> errors = new HashMap<>();
+        result.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+        return ResponseEntity.badRequest().body(errors);
     }
 
 }

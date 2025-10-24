@@ -1,6 +1,7 @@
 package com.ejemplo.crud.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "products")
@@ -10,10 +11,15 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty
+    @Size(min = 3, max = 45)
     private String name;
 
+    @NotNull
+    @Min(500)
     private Integer price;
 
+    @NotEmpty
     private String description;
 
     public Long getId() {
