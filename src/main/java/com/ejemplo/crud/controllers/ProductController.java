@@ -1,5 +1,6 @@
 package com.ejemplo.crud.controllers;
 
+import com.ejemplo.crud.ProductValidation;
 import com.ejemplo.crud.entities.Product;
 import com.ejemplo.crud.services.ProductService;
 import jakarta.validation.Valid;
@@ -21,6 +22,9 @@ public class ProductController {
     @Autowired
     ProductService service;
 
+    @Autowired
+    ProductValidation validation;
+
     @GetMapping
     public List<Product> findAll() {
         return service.findAll();
@@ -28,6 +32,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody Product product, BindingResult result) {
+        validation.validate(product, result);
         if(result.hasFieldErrors()) {
             return validation(result);
         }
@@ -45,6 +50,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@Valid @RequestBody Product product, BindingResult result, @PathVariable Long id) {
+        validation.validate(product, result);
         if(result.hasFieldErrors()) {
             return validation(result);
         }
