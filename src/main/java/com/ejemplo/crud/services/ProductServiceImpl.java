@@ -40,6 +40,7 @@ public class ProductServiceImpl implements ProductService {
             prod.setName(product.getName());
             prod.setPrice(product.getPrice());
             prod.setDescription(product.getDescription());
+            prod.setSku(product.getSku());
             productRepository.save(prod);
         });
         return optionalProduct;
@@ -63,5 +64,11 @@ public class ProductServiceImpl implements ProductService {
             productRepository.delete(prod)
         );
         return optionalProduct;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existsBySku(String sku) {
+        return productRepository.existsBySku(sku);
     }
 }

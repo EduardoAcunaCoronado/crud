@@ -1,4 +1,4 @@
-package com.ejemplo.crud;
+package com.ejemplo.crud.validation;
 
 import com.ejemplo.crud.entities.Product;
 import org.springframework.context.annotation.PropertySource;

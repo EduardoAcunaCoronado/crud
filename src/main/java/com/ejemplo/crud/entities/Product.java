@@ -1,5 +1,7 @@
 package com.ejemplo.crud.entities;
 
+import com.ejemplo.crud.validation.IsExistsDb;
+import com.ejemplo.crud.validation.IsRequired;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
@@ -11,6 +13,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @IsRequired(message = "{IsRequired.product.name}")
     @NotEmpty(message = "{NotEmpty.product.name}")
     @Size(min = 3, max = 45, message = "{Size.product.name}")
     private String name;
@@ -19,8 +22,12 @@ public class Product {
     @Min(value = 500, message = "{Min.product.price}")
     private Integer price;
 
-    @NotBlank(message = "{NotBlank.product.description}")
+    @IsRequired
     private String description;
+
+    @IsRequired(message = "{IsRequired.product.sku}")
+    @IsExistsDb(message = "{IsExistsDb.product.sku}")
+    private String sku;
 
     public Long getId() {
         return id;
@@ -52,5 +59,13 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
     }
 }
