@@ -1,5 +1,7 @@
 package com.ejemplo.crud.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -21,11 +23,13 @@ public class User {
 
     @NotBlank
     @Size(min = 8, max = 60)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     private boolean enabled;
 
     @Transient
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private boolean admin;
 
     @ManyToMany
@@ -43,6 +47,11 @@ public class User {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.enabled = true;
     }
 
     public Long getId() {
