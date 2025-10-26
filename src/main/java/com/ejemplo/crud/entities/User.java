@@ -19,6 +19,9 @@ public class User {
 
     private boolean enabled;
 
+    @Transient
+    private boolean admin;
+
     @ManyToMany
     @JoinTable(
             name = "users_roles",
@@ -75,5 +78,13 @@ public class User {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 }
