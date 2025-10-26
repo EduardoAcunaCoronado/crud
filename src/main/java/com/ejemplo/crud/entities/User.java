@@ -1,11 +1,13 @@
 package com.ejemplo.crud.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
 @Entity
-@Table(name = "products")
+@Table(name = "users")
 public class User {
 
     @Id
@@ -13,8 +15,12 @@ public class User {
     private Long id;
 
     @Column(unique = true)
+    @NotBlank
+    @Size(min = 3, max = 45)
     private String username;
 
+    @NotBlank
+    @Size(min = 8, max = 60)
     private String password;
 
     private boolean enabled;
@@ -34,10 +40,9 @@ public class User {
 
     }
 
-    public User(String username, String password, boolean enabled) {
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.enabled = enabled;
     }
 
     public Long getId() {
