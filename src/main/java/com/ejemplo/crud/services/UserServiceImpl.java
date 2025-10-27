@@ -1,23 +1,24 @@
 package com.ejemplo.crud.services;
 
-import com.ejemplo.crud.entities.Role;
-import com.ejemplo.crud.entities.User;
-import com.ejemplo.crud.repositories.RoleRepository;
-import com.ejemplo.crud.repositories.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import com.ejemplo.crud.entities.Role;
+import com.ejemplo.crud.entities.User;
+import com.ejemplo.crud.repositories.RoleRepository;
+import com.ejemplo.crud.repositories.UserRepository;
 
 @Service
 public class UserServiceImpl implements UserService{
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository repository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -28,21 +29,31 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional(readOnly = true)
     public List<User> findAll() {
-        return (List<User>) userRepository.findAll();
+        return (List<User>) repository.findAll();
     }
 
     @Override
     @Transactional
     public User save(User user) {
-        Optional<Role> optionalRole = roleRepository.findByName("ROLE_USER");
+
+        Optional<Role> optionalRoleUser = roleRepository.findByName("ROLE_USER");
         List<Role> roles = new ArrayList<>();
-        optionalRole.ifPresent(roles::add);
-        if(user.isAdmin()) {
-            optionalRole = roleRepository.findByName("ROLE_ADMIN");
-            optionalRole.ifPresent(roles::add);
+
+        optionalRoleUser.ifPresent(roles::add);
+
+        if (user.isAdmin()) {
+            Optional<Role> optionalRoleAdmin = roleRepository.findByName("ROLE_ADMIN");
+            optionalRoleAdmin.ifPresent(roles::add);
         }
+
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        return repository.save(user);
     }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return repository.existsByUsername(username);
+    }
+    
 }

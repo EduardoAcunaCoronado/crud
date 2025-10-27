@@ -8,11 +8,11 @@ import java.lang.annotation.Target;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
-@Constraint(validatedBy = RequiredValidation.class)
+@Constraint(validatedBy = ExistsByUsernameValidation.class)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.METHOD })
-public @interface IsRequired {
-    String message() default "es requerido usando anotaciones";
+public @interface ExistsByUsername {
+    String message() default "ya existe en la base de datos!, escoja otro username!";
 
     Class<?>[] groups() default {};
 

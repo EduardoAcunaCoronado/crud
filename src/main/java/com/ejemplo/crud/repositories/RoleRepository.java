@@ -1,12 +1,13 @@
 package com.ejemplo.crud.repositories;
 
-import com.ejemplo.crud.entities.Role;
+import java.util.Optional;
+
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.Optional;
+import com.ejemplo.crud.entities.Role;
 
 public interface RoleRepository extends CrudRepository<Role, Long> {
 
     Optional<Role> findByName(String name);
-
+    
 }
